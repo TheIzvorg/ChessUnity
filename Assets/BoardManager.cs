@@ -76,8 +76,6 @@ public class BoardManager : MonoBehaviour
         bool hasAtLeastOneMove = false;
         allowedMoves = ChessFigurePositions[x, y].PossibleMove();
 
-        //Array.Exists<bool>(allowedMoves, true);
-
         foreach(bool item in allowedMoves)
         {
             if (item)
@@ -218,14 +216,7 @@ public class BoardManager : MonoBehaviour
 
     private void EndGame()
     {
-        if (isWhiteTurn)
-            Debug.Log("White team won!");
-        else
-            Debug.Log("Black team won!");
-
-        /*foreach (GameObject go in activeFigures)
-            Destroy(go);*/
-
+        activeFigures.Clear();
         GameObject[] go2 = GameObject.FindGameObjectsWithTag("Chess");
 
         foreach (GameObject item in go2)
@@ -234,7 +225,6 @@ public class BoardManager : MonoBehaviour
         isWhiteTurn = true;
         BoardHighlighting.Instance.HideHighlights();
         SpawnAllChessFigures();
-        Debug.Log("White turn: " + isWhiteTurn);
     }
 
     public List<GameObject> GetAllActiveFigures()
