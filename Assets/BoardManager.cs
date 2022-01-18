@@ -54,7 +54,7 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        if(!isWhiteTurn)
+        if (!isWhiteTurn && Settings.IsSinglePlayer)
         {
             Vector2 aiMove = new Vector2();
             do
@@ -119,34 +119,6 @@ public class BoardManager : MonoBehaviour
 
         selectedFigure = null;
     }
-
-    private void DrawChessBoard()
-    {
-        Vector3 widthLine = Vector3.right * 8;
-        Vector3 heightLine = Vector3.up * 8;
-
-        // Draw Chessboard
-        for (int i = 0; i <= 8; i++)
-        {
-            Vector3 start = Vector3.up * i;
-            Debug.DrawLine(start, start + widthLine);
-            for (int j = 0; j <= 8; j++)
-            {
-                start = Vector3.right * j;
-                Debug.DrawLine(start, start + heightLine);
-            }
-        }
-
-        // Draw Selection
-        if (selectionX >= 0 && selectionY >= 0)
-        {
-            Debug.DrawLine(Vector3.up * selectionY + Vector3.right * selectionX,
-                Vector3.up * (selectionY + 1) + Vector3.right * (selectionX + 1));
-            Debug.DrawLine(Vector3.forward * selectionY + Vector3.right * (selectionX + 1),
-               Vector3.up * (selectionY + 1) + Vector3.right * selectionX);
-        }
-    }
-
     private void UpdateSelection()
     {
         if (!Camera.main) return;

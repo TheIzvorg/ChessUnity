@@ -5,13 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneChanger : MonoBehaviour
 {
-    public void LoadScene(string SceneName)
+    public void StartGame(bool IsSinglePlayer)
     {
-        SceneManager.LoadScene(SceneName);
-    }
-
-    public void LoadScene(int SceneIndex)
-    {
-        SceneManager.LoadScene(SceneIndex);
+        Settings.IsSinglePlayer = IsSinglePlayer;
+        SceneManager.LoadScene(1);
     }
 }
