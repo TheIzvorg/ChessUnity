@@ -113,6 +113,13 @@ public class BoardManager : MonoBehaviour
             selectedFigure.SetPosition(x, y);
             ChessFigurePositions[x, y] = selectedFigure;
             isWhiteTurn = !isWhiteTurn;
+
+            if (selectedFigure.GetType() == typeof(Pawn) && y == 7 * (selectedFigure.isWhite ? 1:0 ))
+            {
+                activeFigures.Remove(selectedFigure.gameObject);
+                Destroy(selectedFigure.gameObject);
+                SpawnChessFigure(1 + (6*(selectedFigure.isWhite ? 0:1)), x, y);
+            }
         }
 
         BoardHighlighting.Instance.HideHighlights();
