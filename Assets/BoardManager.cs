@@ -10,14 +10,10 @@ public class BoardManager : MonoBehaviour
 
     public ChessFigure[,] ChessFigurePositions { get; set; }
     private ChessFigure selectedFigure;
-
-    private const float TILE_SIZE = 1.0f;
-    private const float TILE_OFFSET = 0.5f;
     private int selectionX = -1;
     private int selectionY = -1;
 
-    [SerializeField]
-    private List<GameObject> chessFigures;
+    [SerializeField] private List<GameObject> chessFigures;
     private List<GameObject> activeFigures = new List<GameObject>();
 
     private ChessAI ai;
@@ -133,7 +129,7 @@ public class BoardManager : MonoBehaviour
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0f;
 
-        if (mouseWorldPos.x >= 0 && mouseWorldPos.y >= 0)
+        if (mouseWorldPos.x >= -0.5f && mouseWorldPos.y >= -0.5f)
         {
             selectionX = (int)Math.Round(mouseWorldPos.x);
             selectionY = (int)Math.Round(mouseWorldPos.y);
