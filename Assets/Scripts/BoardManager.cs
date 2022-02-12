@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance { get; set; }
     private bool[,] allowedMoves { get; set; }
+    public bool isWhiteTurn = true;
+    public bool isPause = false;
 
+    private float time;
+    [SerializeField] private Text TimeInGame;
+    [SerializeField] private Text CurrentMove;
     public ChessFigure[,] ChessFigurePositions { get; set; }
     private ChessFigure selectedFigure;
     private int selectionX = -1;
     private int selectionY = -1;
+
+    [SerializeField] private GameObject pauseMenu;
 
     [SerializeField] private List<GameObject> chessFigures;
     private List<GameObject> activeFigures = new List<GameObject>();
 
     private ChessAI ai;
 
-    public bool isWhiteTurn = true;
 
     void Start()
     {
@@ -27,19 +35,32 @@ public class BoardManager : MonoBehaviour
         ai = new ChessAI();
 
         ChessFigurePositions = new ChessFigure[8, 8];
+        CurrentMove.text = "";
+        isPause = false;
 
         SpawnAllChessFigures();
     }
 
     void Update()
     {
+        if (isPause)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            PauseGame();
+
+        time += Time.deltaTime;
+        TimeInGame.text = $"Время игры: {(int)time / 60:d2}:{(int)time % 60:d2}";
+        if(!Settings.IsSinglePlayer)
+            CurrentMove.text = $"Сейчас ходят: {(isWhiteTurn ? "Белые" : "Чёрные")}";
+
         UpdateSelection();
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            if(selectionX >= 0 && selectionY >= 0)
+            if (selectionX >= 0 && selectionY >= 0)
             {
-                if(selectedFigure == null)
+                if (selectedFigure == null)
                 {
                     SelectChessFigure(selectionX, selectionY);
                 }
@@ -50,18 +71,29 @@ public class BoardManager : MonoBehaviour
             }
         }
 
+
         if (!isWhiteTurn && Settings.IsSinglePlayer)
         {
-            Vector2 aiMove = new Vector2();
-            do
-            {
-                selectedFigure = ai.SelectChessFigure();
-                aiMove = ai.MakeMove(selectedFigure);
-            } while (aiMove.x < 0 && aiMove.y < 0);
-
-            allowedMoves = ChessFigurePositions[selectedFigure.CurrentX, selectedFigure.CurrentY].PossibleMove();
-            MoveChessFigure((int)Math.Round(aiMove.x), (int)Math.Round(aiMove.y));
+            DoAIMove();
         } 
+    }
+
+    public void PauseGame()
+    {
+        isPause = true;
+        pauseMenu.SetActive(true);
+    }
+    private void DoAIMove()
+    {
+        Vector2 aiMove = new Vector2();
+        do
+        {
+            selectedFigure = ai.SelectChessFigure();
+            aiMove = ai.MakeMove(selectedFigure);
+        } while (aiMove.x < 0 && aiMove.y < 0);
+
+        allowedMoves = ChessFigurePositions[selectedFigure.CurrentX, selectedFigure.CurrentY].PossibleMove();
+        MoveChessFigure((int)Math.Round(aiMove.x), (int)Math.Round(aiMove.y));
     }
 
     private void SelectChessFigure(int x, int y)
@@ -189,7 +221,7 @@ public class BoardManager : MonoBehaviour
         SpawnChessFigure(11, 7, 6);
     }
 
-    private void EndGame()
+    public void EndGame()
     {
         activeFigures.Clear();
         GameObject[] go2 = GameObject.FindGameObjectsWithTag("Chess");
@@ -200,6 +232,7 @@ public class BoardManager : MonoBehaviour
         isWhiteTurn = true;
         BoardHighlighting.Instance.HideHighlights();
         SpawnAllChessFigures();
+        time = 0;
     }
 
     public List<GameObject> GetAllActiveFigures()
