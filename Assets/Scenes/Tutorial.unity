@@ -321,7 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f54778a95a890443b69fdfa5976e3fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: {fileID: 1896794174}
+  tipText: {fileID: 1896794174}
   isPause: 0
   pauseMenu: {fileID: 223935657}
 --- !u!1 &223935657 stripped
