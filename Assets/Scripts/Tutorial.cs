@@ -3,23 +3,104 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Tutorial : MonoBehaviour
 {
     // Ограничение 100 символов
-    [SerializeField] Text tipText;
-
-    [SerializeField] private bool isPause = false;
-    [SerializeField] private GameObject pauseMenu;
-
-    private List<string> tutorialText;
-    private int currTipId = 0;
-    async void Start()
+    [SerializeField] private Text tipText;
+    [SerializeField] private Image mainImage;
+    #region [SerializeField] private List<Sprite> sprites;
+    /// <summary>
+    /// 0 - PawnSprite,
+    /// 1 - RookSprite,
+    /// 2 - KnightSprite,
+    /// 3 - BishopSprite,
+    /// 4 - QueenSprite,
+    /// 5 - KingSprite,
+    /// </summary>
+    [SerializeField] private List<Sprite> sprites;
+    #endregion
+    public void CloseTutorial()
     {
-        tutorialText = new List<string>();
-        ReadTutorialText();
-        ShowTip();
+        this.gameObject.SetActive(false);
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void TutorialPawn()
+    {
+        this.gameObject.SetActive(true);
+        mainImage.sprite = sprites[0];
+        ReadTutorialText("pawn");
+        mainImage.color = new Color(255, 255, 255, 255);
+        tipText.fontSize = 32;
+    }
+
+    public void TutorialQueen()
+    {
+
+        this.gameObject.SetActive(true);
+        mainImage.sprite = sprites[4];
+        ReadTutorialText("queen");
+        mainImage.color = new Color(255, 255, 255, 255);
+        tipText.fontSize = 32;
+    }
+
+    public void TutorialRook()
+    {
+
+        this.gameObject.SetActive(true);
+        mainImage.sprite = sprites[1];
+        ReadTutorialText("rook");
+        mainImage.color = new Color(255, 255, 255, 255);
+        tipText.fontSize = 32;
+    }
+
+    public void TutorialKnight()
+    {
+
+        this.gameObject.SetActive(true);
+        mainImage.sprite = sprites[2];
+        ReadTutorialText("knight");
+        mainImage.color = new Color(255, 255, 255, 255);
+        tipText.fontSize = 32;
+    }
+
+    public void TutorialKing()
+    {
+        this.gameObject.SetActive(true);
+        mainImage.sprite = sprites[5];
+        ReadTutorialText("king");
+        mainImage.color = new Color(255, 255, 255, 255);
+        tipText.fontSize = 26;
+    }
+
+    public void TutorialBishop()
+    {
+        this.gameObject.SetActive(true);
+        mainImage.sprite = sprites[3];
+        ReadTutorialText("bishop");
+        mainImage.color = new Color(255, 255, 255, 255);
+        tipText.fontSize = 32;
+    }
+
+    public void TutorialGeneral()
+    {
+        this.gameObject.SetActive(true);
+        ReadTutorialText("general");
+        mainImage.color = new Color(255, 255, 255, 0);
+        tipText.fontSize = 32;
+    }
+
+    private void Start()
+    {
+        this.gameObject.SetActive(false);
+        Debug.Log(Application.persistentDataPath);
 
         //ShowTip();
         // TODO: Появление интерфейса обучения
@@ -27,38 +108,17 @@ public class Tutorial : MonoBehaviour
         // Показать как ходят разные фигуры.
         // Показать как сделать Шах и Мат.
     }
-    void Update()
+
+    private void ReadTutorialText(string fileName)
     {
-        if (isPause)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-            PauseGame();
-
-        if (Input.GetMouseButtonDown(0))
-            ShowTip();
-    }
-
-    public void PauseGame()
-    {
-        isPause = true;
-        pauseMenu.SetActive(true);
-    }
-
-    private void ReadTutorialText()
-    {
-        string path = "Assets/Text/tutorial.ini";
+        tipText.text = "";
+        string path = $"Assets/Text/{fileName}.txt";
         StreamReader reader = new StreamReader(path);
         string buff;
         while ((buff = reader.ReadLine()) != null)
         {
-            tutorialText.Add(buff);
+            tipText.text += buff + "\n";
         }
-    }
-
-    private void ShowTip()
-    {
-        tipText.text = tutorialText[currTipId++];
-        currTipId = Mathf.Max(0, Mathf.Min(currTipId, tutorialText.Count - 1));
+        reader.Close();
     }
 }
